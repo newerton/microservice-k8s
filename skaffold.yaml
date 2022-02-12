@@ -1,0 +1,15 @@
+apiVersion: skaffold/v1
+kind: Config
+metadata:
+  name: dev-nestjs-k8s
+deploy:
+  kubeContext: nestjs-k8s
+  kubectl:
+    flags:
+      global: [--namespace=nestjs-k8s]
+    manifests:
+      - ./initial/namespaces.yaml
+      - ./ingress/ingress.yaml
+      - ./api-gateway/01-secrets.yaml
+      - ./api-gateway/03-app.yaml
+      
