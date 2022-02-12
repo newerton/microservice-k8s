@@ -3,13 +3,31 @@ kind: Config
 metadata:
   name: dev-nestjs-k8s
 deploy:
-  kubeContext: nestjs-k8s
+  # kubeContext: nestjs-k8s
   kubectl:
     flags:
       global: [--namespace=nestjs-k8s]
     manifests:
-      - ./initial/namespaces.yaml
-      - ./ingress/ingress.yaml
+      - ./01-initial/namespaces.yaml
+      - ./02-ingress/ingress.yaml
+      # keycloak
+      # - ./03-keycloak/01-secrets-keys.yaml
+      # - ./03-keycloak/01-secrets.yaml
+      # - ./03-keycloak/02-configmap-import.json.yaml
+      # - ./03-keycloak/02-configmap-standalone-ha.xml.yaml
+      # - ./03-keycloak/03-mysql.yaml
+      # - ./03-keycloak/04-app.yaml
+      # api-gateway
       - ./api-gateway/01-secrets.yaml
       - ./api-gateway/03-app.yaml
-      
+      # auth-engine
+      - ./auth-engine/01-secrets.yaml
+      - ./auth-engine/02-app.yaml
+      # user-engine
+      - ./user-engine/01-secrets.yaml
+      - ./user-engine/02-app.yaml
+      # product-engine
+      - ./product-engine/01-secrets.yaml
+      - ./product-engine/02-postgres.yaml
+      - ./product-engine/03-redis.yaml
+      - ./product-engine/04-app.yaml
