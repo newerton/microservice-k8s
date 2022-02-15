@@ -1,3 +1,19 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: nestjs-k8s
+  name: redis-pvc-volume
+  labels:
+    app: redis
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 2Gi
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -34,10 +50,43 @@ spec:
           image: redis:6.2.5-alpine
           ports:
             - containerPort: 6379
-          args: ["--requirepass", "$(REDIS_PASSWORD)"]
+          args:
+            [
+              "--requirepass",
+              "$(REDIS_PASSWORD)",
+              "--appendonly",
+              "yes",
+              "--save",
+              "900",
+              "1",
+              "--save",
+              "30",
+              "2",
+            ]
           env:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: product-engine-secret
                   key: REDIS_PASSWORD
+          volumeMounts:
+            - name: redis-pvc-volume
+              mountPath: /data
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            periodSeconds: 15
+          resources:
+            requests:
+              memory: 64Mi
+              cpu: 250m
+            limits:
+              memory: 128Mi
+              cpu: 500m
+      volumes:
+        - name: redis-pvc-volume
+          persistentVolumeClaim:
+            claimName: redis-pvc-volume

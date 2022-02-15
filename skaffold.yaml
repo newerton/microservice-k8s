@@ -11,7 +11,7 @@ deploy:
       - ./01-initial/namespaces.yaml
       - ./02-ingress/ingress.yaml
       # keycloak
-      # - ./03-keycloak/01-secrets-keys.yaml
+      - ./03-keycloak/01-secrets-keys.yaml
       # - ./03-keycloak/01-secrets.yaml
       # - ./03-keycloak/02-configmap-import.json.yaml
       # - ./03-keycloak/02-configmap-standalone-ha.xml.yaml
@@ -29,5 +29,5 @@ deploy:
       # product-engine
       - ./product-engine/01-secrets.yaml
       - ./product-engine/02-postgres.yaml
-      - ./product-engine/03-redis.yaml
+      # - ./product-engine/03-redis.yaml
       - ./product-engine/04-app.yaml
