@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ include "app.namespace" . }}
+  name: keycloak-realm-import
+data:
+  test-realm-import.json: |
+{{ $.Files.Get "config/keycloak/test-realm-import.json" | indent 4 }}
+      

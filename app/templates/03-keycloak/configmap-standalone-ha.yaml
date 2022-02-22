@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ include "app.namespace" . }}
+  name: keycloak-ha-configmap
+data:
+  standalone-ha.xml: |
+{{ $.Files.Get "config/keycloak/standalone-ha.xml" | indent 4 }}
