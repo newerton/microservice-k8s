@@ -1,0 +1,10 @@
+MODE: production
+DB_VENDOR: mysql
+DB_ADDR: mysql
+DB_DATABASE: api_gateway
+DB_PORT: "3306"
+DB_USER: root
+DB_PASSWORD: root
+
+KAFKA_BROKER_HOST: my-cluster-kafka-bootstrap.kafka.svc.cluster.local
+KAFKA_BROKER_PORT: "9092"

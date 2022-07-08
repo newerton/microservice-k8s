@@ -1,0 +1,88 @@
+mode: develop
+replicaCount: 1
+
+swagger:
+  url: http://api.microservice.local/docs
+
+ingress:
+  hosts:
+    - host: api.microservice.local
+      name: api-gateway
+    # - host: auth.microservice.local
+    #   name: keycloak
+
+resources:
+  keycloak:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 400m
+      memory: 512Mi
+
+keycloak:
+  internalUrl: http://keycloak.mktplace-develop.svc.cluster.local
+  externalUrl: http://auth.microservice.local
+  realm: nestjs-auth
+  publicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0s5/sexy2/wAedsaMVo64Ap9RizP2pmGjbAOfMFI1ZNao59TQxVUiyF2pr3eFkGksYjseuiV0gBtztDJ8hBJoq3NZ8HtD3pdLdSHRopMRlj066giOz2mReRCyCDQgbqFRsrZLhQraBSGUw1TYvVPrVUf3oZnaZNNkv/htqSQRUE2nUUEQIsEXZ3lPQzRBJ8og/vnfAblV2wopy5MhjFZJdJP49fa96rn6Eg64MPVHowuy9yF/HvHaN+K9JMh6oRwM/I4KSGCW/hhsRo5h0vpa/GE9oQBU5cDYnmLA4//C7U+919wQ7nRU1ERVuPrt6VP3sE181DjL3+hynjQCrQ+QwIDAQAB
+  clients:
+    apiGateway:
+      clientId: api-gateway
+      clientSecret: PH5zPDdBNWDJBZQFbRpoRQFn7ZECbeY1
+    usersCredentials:
+      clientId: users-credentials
+      clientSecret: bo7G0uuOJYR6sOFMbiSBjjLHr62t17sE
+  # existingConfigmap: "keycloak-ha-configmap"
+  auth:
+    adminUser: admin
+    adminPassword: admin
+  ingress:
+    enabled: true
+    hostname: auth.microservice.local
+  postgresql:
+    postgresqlPassword: root
+  extraEnvVars:
+    - name: KEYCLOAK_EXTRA_ARGS
+      value: -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled -Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/import
+    - name: KEYCLOAK_LOG_LEVEL
+      value: "DEBUG" # ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE and WARN.
+  extraVolumeMounts:
+    - name: keycloak-import-config
+      mountPath: /tmp/import/nestjs-auth-realm.json
+      subPath: nestjs-auth-realm.json
+  extraVolumes:
+    - name: keycloak-import-config
+      configMap:
+        name: keycloak-realm-import
+        items:
+          - key: nestjs-auth-realm.json
+            path: nestjs-auth-realm.json
+
+images:
+  pullPolicy: IfNotPresent
+  mysql:
+    image: mysql:8
+    port: 3306
+  keycloak:
+    image: quay.io/keycloak/keycloak:16.1.1
+    http:
+      port: 8080
+    https:
+      port: 8443
+
+database:
+  mysql:
+    name: mysql
+    image: mysql:8
+    port: 3306
+    host: mysql
+    user: root
+    password: root
+    storage:
+      size: 10Gi
+
+microservices:
+  APIGateway:
+    image: newerton/api-gateway:latest
+    port: 80
+    targetPort: 8000

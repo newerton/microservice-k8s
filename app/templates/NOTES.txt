@@ -1,0 +1,15 @@
+1. Swagger
+API Documentation:        {{ .Values.swagger.url }}
+
+2. Keycloak
+Keycloak:                 {{ .Values.keycloak.externalUrl }}
+Keycloak Admin Console:   {{ .Values.keycloak.externalUrl }}/admin
+Keycloak Account Console: {{ .Values.keycloak.externalUrl }}/realms/{{ .Values.keycloak.clients.apiGateway.clientId }}/account
+
+3. Add in hosts:
+
+127.0.0.1     auth.microservice.local
+{{- range .Values.ingress.hosts }}
+127.0.0.1     {{ .host }}
+{{- end }}
+

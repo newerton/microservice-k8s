@@ -4,6 +4,6 @@ metadata:
   namespace: {{ include "app.namespace" . }}
   name: keycloak-realm-import
 data:
-  test-realm-import.json: |
-{{ $.Files.Get "config/keycloak/test-realm-import.json" | indent 4 }}
+  nestjs-auth-realm.json: |
+{{ $.Files.Get "config/keycloak/nestjs-auth-realm.json" | indent 4 }}
       

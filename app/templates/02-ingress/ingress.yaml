@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: nestjs-k8s
-  name: api-gateway-ingress
+  namespace: {{ include "app.namespace" . }}
+  name: {{ .Release.Name }}-ingress
   annotations:
     # kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/enable-cors: "true"
@@ -21,27 +21,20 @@ metadata:
 spec:
   tls:
     - hosts:
-        - api.microservice.local
-        - auth.microservice.local
-      secretName: wildcard-tls-secret
+        {{- range .Values.ingress.hosts }}
+        - {{ .host }}
+        {{- end }}
+      # secretName: wildcard-tls-secret
   rules:
-    - host: api.microservice.local
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: api-gateway
+                name: {{ .name }}
                 port:
                   number: 80
-    - host: auth.microservice.local
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: keycloak
-                port:
-                  number: 80
+    {{- end }}
