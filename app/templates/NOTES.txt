@@ -7,9 +7,11 @@ Keycloak Admin Console:   {{ .Values.keycloak.externalUrl }}/admin
 Keycloak Account Console: {{ .Values.keycloak.externalUrl }}/realms/{{ .Values.keycloak.clients.apiGateway.clientId }}/account
 
 3. Add in hosts:
-
 127.0.0.1     auth.microservice.local
 {{- range .Values.ingress.hosts }}
 127.0.0.1     {{ .host }}
 {{- end }}
 
+4. Port Forwarding (for local development)
+PostgreSQL: kubectl port-forward svc/svc/mktplace-postgresql 5432:5432
+Kafka: kubectl port-forward svc/mktplace-kafka-0-external 9094:9094

@@ -8,8 +8,6 @@ ingress:
   hosts:
     - host: api.microservice.local
       name: api-gateway
-    # - host: auth.microservice.local
-    #   name: keycloak
 
 resources:
   keycloak:
@@ -19,6 +17,29 @@ resources:
     limits:
       cpu: 400m
       memory: 512Mi
+
+kafka:
+  # kubectl port-forward --namespace=mktplace-develop svc/mktplace-kafka 9092:9092
+  # advertisedListeners: INTERNAL://127.0.0.1:9093,CLIENT://127.0.0.1:9092
+  externalAccess:
+    enabled: true
+    type: NodePort
+    autoDiscovery:
+      enabled: true
+    service:
+      type: NodePort
+      nodePorts:
+        - 30090
+    # external:
+    #   enabled: true
+    #   type: LoadBalancer
+    #   domain: kafka.microservice.local
+    #   annotations:
+    #     service.beta.kubernetes.io/aws-load-balancer-internal:
+  serviceAccount:
+    create: true
+  rbac:
+    create: true
 
 keycloak:
   internalUrl: http://keycloak.mktplace-develop.svc.cluster.local
@@ -40,7 +61,17 @@ keycloak:
     enabled: true
     hostname: auth.microservice.local
   postgresql:
-    postgresqlPassword: root
+    enabled: false
+    auth:
+      username: postgres
+      password: postgres
+      database: keycloak
+  externalDatabase:
+    host: mktplace-postgresql.mktplace-develop.svc.cluster.local
+    port: 5432
+    user: postgres
+    password: postgres
+    database: keycloak
   extraEnvVars:
     - name: KEYCLOAK_EXTRA_ARGS
       value: -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled -Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/import
@@ -58,22 +89,61 @@ keycloak:
           - key: nestjs-auth-realm.json
             path: nestjs-auth-realm.json
 
+postgresql:
+  image:
+    debug: true
+  auth:
+    postgresPassword: postgres
+    username: postgres
+    password: postgres
+  primary:
+    # livenessProbe:
+    #   enabled: true
+    #   initialDelaySeconds: 200
+    # readinessProbe:
+    #   enabled: true
+    #   initialDelaySeconds: 200
+    # service:
+    #   type: ClusterIP
+    #   ports:
+    #     postgresql: 5432
+    #   nodePorts:
+    #     postgresql: 30091
+    persistence:
+      enabled: true
+      storageClass: "local-path"
+      size: 2Gi
+      accessModes:
+        - ReadWriteOnce
+    initdb:
+      user: postgres
+      password: postgres
+      scriptsConfigMap: postgresql-initdb
+
+
+  # metrics:
+  #   enabled: true
+  #   serviceMonitor:
+  #     enabled: true
+  #     namespace: monitoring
+  #     interval: 30s
+  #     scrapeTimeout: 10s
+  #     selector:
+  #       prometheus: kube-prometheus
+  serviceAccount:
+    create: true
+  rbac:
+    create: true
+
 images:
   pullPolicy: IfNotPresent
   mysql:
     image: mysql:8
     port: 3306
-  keycloak:
-    image: quay.io/keycloak/keycloak:16.1.1
-    http:
-      port: 8080
-    https:
-      port: 8443
 
 database:
   mysql:
     name: mysql
-    image: mysql:8
     port: 3306
     host: mysql
     user: root
