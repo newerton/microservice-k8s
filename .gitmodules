@@ -1,3 +1,12 @@
 [submodule "api-gateway"]
 	path = api-gateway
 	url = https://github.com/newerton/api-gateway.git
+[submodule "auth-engine"]
+	path = auth-engine
+	url = https://github.com/newerton/auth-engine.git
+[submodule "user-engine"]
+	path = user-engine
+	url = https://github.com/newerton/user-engine.git
+[submodule "product-engine"]
+	path = product-engine
+	url = https://github.com/newerton/product-engine
