@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ include "app.namespace" . }}
+  name: {{ .Release.Name }}-kafka-control-center
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "app.selectorLabels" . | nindent 8 }}
+    spec:
+      # imagePullSecrets:
+      #   - name: registry-secret
+      containers:
+      - name: {{ .Release.Name }}-kafka-control-center
+        image: confluentinc/cp-enterprise-control-center:latest
+        ports:
+        - containerPort: 9021
+        env:
+        - name: CONTROL_CENTER_BOOTSTRAP_SERVERS
+          value: "mktplace-kafka-headless.mktplace-develop.svc.cluster.local:9093"
+        - name: CONTROL_CENTER_REPLICATION_FACTOR
+          value: "1"
+        - name: PORT
+          value: "9021"

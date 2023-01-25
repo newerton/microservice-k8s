@@ -59,6 +59,7 @@ keycloak:
     adminPassword: admin
   ingress:
     enabled: true
+    ingressClassName: nginx
     hostname: auth.microservice.local
   postgresql:
     enabled: false
@@ -74,7 +75,20 @@ keycloak:
     database: keycloak
   extraEnvVars:
     - name: KEYCLOAK_EXTRA_ARGS
-      value: -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled -Dkeycloak.profile.feature.token_exchange=enabled -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/import
+      value: 
+        -Dkeycloak.profile.feature.client_secret_rotation=enabled 
+        -Dkeycloak.profile.feature.declarative_user_profile=enabled 
+        -Dkeycloak.profile.feature.docker=enabled 
+        -Dkeycloak.profile.feature.dynamic_scopes=enabled 
+        -Dkeycloak.profile.feature.openshift_integration=enabled 
+        -Dkeycloak.profile.feature.recovery_codes=enabled 
+        -Dkeycloak.profile.feature.scripts=enabled 
+        -Dkeycloak.profile.feature.update_email=enabled 
+        -Dkeycloak.profile.feature.admin_fine_grained_authz=enabled 
+        -Dkeycloak.profile.feature.token_exchange=enabled
+        -Dkeycloak.migration.action=import 
+        -Dkeycloak.migration.provider=dir 
+        -Dkeycloak.migration.dir=/tmp/import
     - name: KEYCLOAK_LOG_LEVEL
       value: "DEBUG" # ALL, DEBUG, ERROR, FATAL, INFO, OFF, TRACE and WARN.
   extraVolumeMounts:

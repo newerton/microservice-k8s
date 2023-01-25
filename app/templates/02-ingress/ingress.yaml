@@ -18,6 +18,7 @@ metadata:
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
+  ingressClassName: nginx
   tls:
   - hosts:
     {{- range .Values.ingress.hosts }}
