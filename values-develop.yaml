@@ -65,13 +65,13 @@ keycloak:
     enabled: false
     auth:
       username: postgres
-      password: postgres
+      password: postgres123
       database: keycloak
   externalDatabase:
     host: mktplace-postgresql.mktplace-develop.svc.cluster.local
     port: 5432
     user: postgres
-    password: postgres
+    password: postgres123
     database: keycloak
   extraEnvVars:
     - name: KEYCLOAK_EXTRA_ARGS
@@ -107,9 +107,9 @@ postgresql:
   image:
     debug: true
   auth:
-    postgresPassword: postgres
+    postgresPassword: postgres123
     username: postgres
-    password: postgres
+    password: postgres123
   primary:
     # livenessProbe:
     #   enabled: true
@@ -131,7 +131,7 @@ postgresql:
         - ReadWriteOnce
     initdb:
       user: postgres
-      password: postgres
+      password: postgres123
       scriptsConfigMap: postgresql-initdb
 
 
