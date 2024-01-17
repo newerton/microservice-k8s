@@ -10,3 +10,6 @@
 [submodule "product-engine"]
 	path = product-engine
 	url = https://github.com/newerton/product-engine
+[submodule "notification-engine"]
+	path = notification-engine
+	url = https://github.com/newerton/notification-engine

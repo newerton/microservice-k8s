@@ -62,12 +62,14 @@ k8s_resource(
 k8s_resource(
   'mktplace-kafka-control-center',
   trigger_mode=TRIGGER_MODE_AUTO,
-  labels=['helm-services']
+  labels=['helm-services'],
+  port_forwards='9021:9021'
 )
 k8s_resource(
   'mktplace-postgresql',
   trigger_mode=TRIGGER_MODE_AUTO,
-  labels=['helm-services']
+  labels=['helm-services'],
+  port_forwards='54323:5432'
 )
 k8s_resource(
   'mktplace-keycloak',
