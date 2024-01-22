@@ -5,6 +5,7 @@ metadata:
   name: postgresql-initdb
 data:
   initdb.sql: |
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
     CREATE DATABASE keycloak;
     CREATE DATABASE mktplace_products;
     CREATE DATABASE mktplace_orders;

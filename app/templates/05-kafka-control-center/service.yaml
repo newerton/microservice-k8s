@@ -8,8 +8,8 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - port: 9021
-      targetPort: 9021
+    - port: 9000
+      targetPort: 9000
       nodePort: 30021
   selector:
     {{- include "app.selectorLabels" . | nindent 4 }}

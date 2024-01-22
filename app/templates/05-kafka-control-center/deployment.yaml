@@ -19,13 +19,21 @@ spec:
       #   - name: registry-secret
       containers:
       - name: {{ .Release.Name }}-kafka-control-center
-        image: confluentinc/cp-enterprise-control-center:latest
+        image: provectuslabs/kafka-ui:latest
         ports:
-        - containerPort: 9021
+          - containerPort: 9000
         env:
-        - name: CONTROL_CENTER_BOOTSTRAP_SERVERS
-          value: "mktplace-kafka-headless.mktplace-develop.svc.cluster.local:9093"
-        - name: CONTROL_CENTER_REPLICATION_FACTOR
-          value: "1"
-        - name: PORT
-          value: "9021"
+          - name: KAFKA_CLUSTERS_0_NAME
+            value: "q1Sh-9_ISia_zwGINzRvyQ"
+          - name: KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS
+            value: "mktplace-kafka-controller-0.mktplace-kafka-controller-headless.mktplace-develop.svc.cluster.local:9092"
+          - name: KAFKA_CLUSTERS_0_METRICS_PORT
+            value: "9997"
+          - name: AUTH_TYPE
+            value: LOGIN_FORM
+          - name: SPRING_SECURITY_USER_NAME
+            value: admin
+          - name: SPRING_SECURITY_USER_PASSWORD
+            value: admin
+          - name: SERVER_PORT
+            value: '9000'

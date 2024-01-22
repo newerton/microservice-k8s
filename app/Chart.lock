@@ -1,12 +1,12 @@
 dependencies:
 - name: keycloak
   repository: https://charts.bitnami.com/bitnami
-  version: 13.0.1
+  version: 18.2.1
 - name: kafka
   repository: https://charts.bitnami.com/bitnami
-  version: 20.0.4
+  version: 26.8.0
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
-  version: 12.1.9
-digest: sha256:f365b629cbdde7f8743b3039f033fc5fad2dd59d0c1c20d9b588698fb647a5b9
-generated: "2023-01-15T02:21:46.9448507-03:00"
+  version: 13.3.1
+digest: sha256:0b45170349b8503aa6401f468d3f62ce678e17aa4e5c2c8d616b5a85adaebfa2
+generated: "2024-01-22T00:13:37.0711575-03:00"
