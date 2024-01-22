@@ -21,25 +21,44 @@ resources:
 kafka:
   # kubectl port-forward --namespace=mktplace-develop svc/mktplace-kafka 9092:9092
   # advertisedListeners: INTERNAL://127.0.0.1:9093,CLIENT://127.0.0.1:9092
+  extraConfig: "autoCreateTopicsEnable=true;deleteTopicEnable=true"
+  image:
+    debug: true  
   externalAccess:
     enabled: true
-    type: NodePort
-    autoDiscovery:
-      enabled: true
-    service:
-      type: NodePort
-      nodePorts:
-        - 30090
-    # external:
-    #   enabled: true
-    #   type: LoadBalancer
-    #   domain: kafka.microservice.local
-    #   annotations:
-    #     service.beta.kubernetes.io/aws-load-balancer-internal:
+    controller:
+      service:
+        domain: "kafka.microservice.local"
+        type: NodePort
+        nodePorts: [31000, 31001, 31002]
   serviceAccount:
     create: true
   rbac:
     create: true
+  controller:
+    replicaCount: 3
+  kraft:
+    enabled: true
+    clusterId: "q1Sh-9_ISia_zwGINzRvyQ"
+  metrics:
+    jmx:
+      enabled: true
+      kafkaJmxPort: 9997
+    kafka:
+      enabled: false
+    serviceMonitor:
+      enabled: false
+      labels:
+        release: prometheus
+  listeners:
+    client:
+      protocol: PLAINTEXT
+    controller:
+      protocol: PLAINTEXT
+    interbroker:
+      protocol: PLAINTEXT
+    external:
+      protocol: PLAINTEXT
 
 keycloak:
   internalUrl: http://keycloak.mktplace-develop.svc.cluster.local
