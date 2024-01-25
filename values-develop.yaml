@@ -168,6 +168,10 @@ postgresql:
   rbac:
     create: true
 
+redis:
+  auth:
+    enabled: false
+
 images:
   pullPolicy: IfNotPresent
   mysql:

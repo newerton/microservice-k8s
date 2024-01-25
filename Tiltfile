@@ -1,6 +1,6 @@
 # -*- mode: Python -*-
-load('ext://namespace', 'namespace_create', 'namespace_inject')
-namespace_create('mktplace-develop')
+# load('ext://namespace', 'namespace_create', 'namespace_inject')
+# namespace_create('mktplace-develop')
 
 k8s_yaml(
   helm(
@@ -11,25 +11,17 @@ k8s_yaml(
   )
 )
 
-# The helm() call above is functionally equivalent to the following:
-#
-# k8s_yaml(local('helm template -f ./values-dev.yaml ./busybox'))
-# watch_file('./busybox')
-# watch_file('./values-dev.yaml')
-
-# docker_build('k8s-develop', '.')
-
 k8s_resource(
   new_name='mktplace-configs', 
   trigger_mode=TRIGGER_MODE_AUTO,
   labels=['helm-services'],
   objects=[
-    "mktplace-develop:namespace:default",
-    "mktplace-develop:namespace:mktplace-develop",
+    "mktplace-develop:namespace",
     "mktplace-kafka-provisioning:serviceaccount",
     "mktplace-kafka:serviceaccount",
     "mktplace-keycloak:serviceaccount",
     "mktplace-postgresql:serviceaccount",
+    "mktplace-redis:serviceaccount",
     "mktplace-kafka:role",
     "mktplace-postgresql:role",
     "mktplace-kafka:rolebinding",
@@ -38,6 +30,9 @@ k8s_resource(
     "mktplace-kafka-jmx-configuration:configmap",
     "mktplace-kafka-scripts:configmap",
     "mktplace-keycloak-env-vars:configmap",
+    "mktplace-redis-configuration:configmap",
+    "mktplace-redis-health:configmap",
+    "mktplace-redis-scripts:configmap",
     "keycloak-realm-import:configmap",
     "keycloak-ha-configmap:configmap",
     "postgresql-initdb:configmap",
@@ -60,6 +55,7 @@ k8s_resource(
   labels=['helm-services'],
   resource_deps=['mktplace-configs']
 )
+
 k8s_resource(
   'mktplace-kafka-control-center',
   trigger_mode=TRIGGER_MODE_AUTO,
@@ -67,6 +63,7 @@ k8s_resource(
   port_forwards='9000:9000',
   resource_deps=['mktplace-configs', 'mktplace-kafka-controller']
 )
+
 k8s_resource(
   'mktplace-postgresql',
   trigger_mode=TRIGGER_MODE_AUTO,
@@ -81,3 +78,17 @@ k8s_resource(
   resource_deps=['mktplace-configs', 'mktplace-postgresql']
 )
 
+k8s_resource(
+  'mktplace-redis-master',
+  trigger_mode=TRIGGER_MODE_AUTO,
+  labels=['helm-services'],
+  port_forwards='6379:6379',
+  resource_deps=['mktplace-configs']
+)
+
+k8s_resource(
+  'mktplace-redis-replicas',
+  trigger_mode=TRIGGER_MODE_AUTO,
+  labels=['helm-services'],
+  resource_deps=['mktplace-configs', 'mktplace-redis-master']
+)
